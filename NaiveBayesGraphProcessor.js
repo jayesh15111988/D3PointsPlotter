@@ -51,8 +51,8 @@ appendAxisToSVGElementWithScale(svg,xScale,yScale,"Words Frequency in SMS","Cons
          .attr("class","overlay")
          .on("mouseover", function() { focus.style("display", null)})
          .on("mouseout", function() { focus.style("display", "none")})
-         .on("mousemove", function(data){
-          mouseMovedOverDataPointsNaiveBayes(data);
+         .on("mousemove", function(data,index){
+          mouseMovedOverDataPointsNaiveBayes(data,index);
          })
          .attr("fill",function(d,i){return color(i);})
          .attr("fill-opacity",defaultColorOpacity); 
@@ -65,7 +65,7 @@ var focus = createFocusElement(svg,0);
       
 
 
- function mouseMovedOverDataPointsNaiveBayes(data) {
+ function mouseMovedOverDataPointsNaiveBayes(data,currentIndex) {
    
         
   var currentFrequencyValue=0.0;
@@ -83,6 +83,7 @@ var currentXValueOfPoint = xScale(currentFrequencyValue);
     focus.select("text").text(data[currentFrequencyValue]+" ("+currentFrequencyValue+")");
     focus.select("circle").attr("r",5);
  
+    focus.select("line").attr("stroke",color(currentIndex));
 
  focus.select("line").attr({
 "x1": "0",

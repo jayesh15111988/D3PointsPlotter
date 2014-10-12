@@ -17,7 +17,6 @@ appendAxisToSVGElementWithScale(svg,xScale,yScale,"Distance From SPAM centroid",
 
 pointIndicatorLineForKMeans = svg.append("line")
 .attr("stroke","green")
-.attr("fill","black")
 .attr("stroke-width",1);
 
 
@@ -103,14 +102,23 @@ if(currentXValueOfPoint > (maximumSVGWidth/2)){
   originatingXPoint = currentXValueOfPoint - labelOffsetForBoundary;
 }
 
-
-
     focus.attr("transform", "translate(" + (originatingXPoint) + "," + ( originatingYPoint ) + ")");
     focus.select("text").text(inputMessageValue);
+    
     //We don't want to show extra line on screen which is colored in the orange
     focus.select("line").style("display","none");
-  
 
+pointIndicatorLineForKMeans.attr("stroke",function(){
+
+if(currentTupleWithMessageType[2] == true ){
+  return "red";
+}
+else{
+  return "green";
+}
+
+
+});
     pointIndicatorLineForKMeans.attr({
   "x1":originatingXPoint,
   "y1": originatingYPoint,

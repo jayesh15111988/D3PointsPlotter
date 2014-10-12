@@ -18,8 +18,7 @@ function createFocusElement(svg,yOffsetForGraphText){
 
 focusElement.append("line")
 .attr("stroke","orange")
-.attr("fill","black")
-.attr("stroke-width",3)
+.attr("stroke-width",2)
 .attr({
   "x1":0,
   "y1":10,
