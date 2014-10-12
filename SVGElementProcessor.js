@@ -1,13 +1,23 @@
 function createSVGElement(graphTitle){
-  return  d3.select("body")
+
+  var SVGElement =  d3.select("body")
 			.append("p")
-			.attr("class","separator")
-			.text(graphTitle)
+			.attr("class","separator")			
             .append("svg")
             .attr("width", maximumSVGWidth)
             .attr("height", maximumSVGheight)
             .attr("x",SVGOffset)
             .attr("y",SVGOffset);
+			
+			
+			//Adding title to graph elements for current context
+	SVGElement.append("text")
+    .attr("x",20)
+    .attr("y",20)
+	.attr("fill","rgb(25,20,0)")
+    .text(graphTitle);
+	
+	return SVGElement;
 }
 
 function appendAxisToSVGElementWithScale(svg,xScale,yScale,xAxisTitle,yAxisTitle){
@@ -29,8 +39,7 @@ svg.append("text")
     .attr("x",maximumSVGWidth/3)
     .attr("y",maximumSVGheight-20)
     .text(xAxisTitle);
-
-
+	
 
 svg.append("text")
     .attr("text-anchor", "end")
