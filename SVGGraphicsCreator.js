@@ -7,9 +7,12 @@
       var numberOfTicksInYdirection=2,numberOfTicksInXdirection=50;
       var xAxisOrientation="bottom", yAxisOrientation="left";
       var bulletsDefaultYValue=200;      
-      var defaultColorOpacity = "0.5";
+      var defaultColorOpacity = "0.4";
       var defaultYOffsetForDataPointLabel = 60;
       var color = d3.scale.category20();
+
+      //Line drawn from Bullet point to the corresponding label
+      var pointIndicatorLineForKMeans;
       
 
 createGraphFromMessagesKeywords(spamMessagesFrequenciesCollection);
@@ -18,6 +21,8 @@ createGraphFromKMeansClusteringResults(KMeansClusteringCentroidDistanceData);
 
 
 function createGraphFromKMeansClusteringResults(KMeansClusteringOutput){
+
+//Adjusting graph width for KMeans clustering graph
 
 maximumSVGWidth = 2500;
 var xScale=getXScale(KMeansClusteringOutput);
@@ -29,6 +34,15 @@ numberOfTicksInXdirection = 10;
 numberOfTicksInYdirection = 5;
 
 appendAxisToSVGElementWithScale(svg,xScale,yScale,"Distance From SPAM centroid","Distance From Regular message centroid");
+
+
+pointIndicatorLineForKMeans = svg.append("line")
+.attr("stroke","green")
+.attr("fill","black")
+.attr("stroke-width",1);
+
+
+
 
 
  svg.selectAll("circle")
@@ -57,9 +71,11 @@ appendAxisToSVGElementWithScale(svg,xScale,yScale,"Distance From SPAM centroid",
          })
          .attr("r", 5)// We are adding these elements to fire events when user hovers over these data points
          .attr("class","overlay")
-         .on("mouseover", function() { focus.style("display", null); })
-         .on("mouseout", function() { focus.style("display", "none"); })
-         .on("mousemove", mouseMovedOverDataPoints)
+         .on("mouseover", function() { focus.style("display", null);pointIndicatorLineForKMeans.style("display", null) })
+         .on("mouseout", function() { focus.style("display", "none");  pointIndicatorLineForKMeans.style("display", "none")})
+         .on("mousemove", function(data){
+          mouseMovedOverDataPointsKMeans(data)
+         })
          .attr("fill",function(d,i){
 
 
@@ -85,8 +101,9 @@ else{
 var focus = createFocusElement(svg,-10);
       
 
+//Which event gets triggered when user hovers mouse pointer over bullets
 
- function mouseMovedOverDataPoints(data) {
+ function mouseMovedOverDataPointsKMeans(data) {
    
         
   var currentTupleWithDataPoints = [];
@@ -99,23 +116,28 @@ for(inputMessage in data){
 var currentXValueOfPoint = xScale(currentTupleWithMessageType[0]);
 var currentYValueOfPoint = yScale(currentTupleWithMessageType[1]);
 
+var originatingXPoint = currentXValueOfPoint;
+var originatingYPoint = 40;
+var labelOffsetForBoundary = 200;
 
-if(currentXValueOfPoint>(maximumSVGWidth-200)){
-  currentXValueOfPoint-=(maximumSVGWidth/4);
+if(currentXValueOfPoint > (maximumSVGWidth/2)){
+  originatingXPoint = currentXValueOfPoint - labelOffsetForBoundary;
 }
 
 
-    focus.attr("transform", "translate(" + currentXValueOfPoint + "," + defaultYOffsetForDataPointLabel + ")");
-    focus.select("text").text(inputMessageValue+ "isSpam : "+currentTupleWithMessageType[2]);
 
-    focus.select("line").attr({
-"x1": "0",
-"y1": "0",
-"x2": "0",
-"y2": currentYValueOfPoint - 60
+    focus.attr("transform", "translate(" + (originatingXPoint) + "," + ( originatingYPoint ) + ")");
+    focus.select("text").text(inputMessageValue);
+    //We don't want to show extra line on screen which is colored in the orange
+    focus.select("line").style("display","none");
+  
 
-
-    })
+    pointIndicatorLineForKMeans.attr({
+  "x1":originatingXPoint,
+  "y1": originatingYPoint,
+  "x2":currentXValueOfPoint,
+  "y2":currentYValueOfPoint,
+}); 
 
   }
 
@@ -146,6 +168,7 @@ if(currentXValueOfPoint>(maximumSVGWidth-200)){
 appendAxisToSVGElementWithScale(svg,xScale,yScale,"Words Frequency in SMS","Constant");
 
 
+
 //We are plotting frequency of each word in the form of points in the shape of a circle
 
       svg.selectAll("circle")
@@ -172,9 +195,11 @@ appendAxisToSVGElementWithScale(svg,xScale,yScale,"Words Frequency in SMS","Cons
             }
          })// We are adding these elements to fire events when user hovers over these data points
          .attr("class","overlay")
-         .on("mouseover", function() { focus.style("display", null); })
-         .on("mouseout", function() { focus.style("display", "none"); })
-         .on("mousemove", mouseMovedOverDataPoints)
+         .on("mouseover", function() { focus.style("display", null)})
+         .on("mouseout", function() { focus.style("display", "none")})
+         .on("mousemove", function(data){
+          mouseMovedOverDataPointsNaiveBayes(data);
+         })
          .attr("fill",function(d,i){return color(i);})
          .attr("fill-opacity",defaultColorOpacity); 
 
@@ -186,7 +211,7 @@ var focus = createFocusElement(svg,0);
       
 
 
- function mouseMovedOverDataPoints(data) {
+ function mouseMovedOverDataPointsNaiveBayes(data) {
    
         
   var currentFrequencyValue=0.0;
@@ -199,12 +224,24 @@ var currentXValueOfPoint = xScale(currentFrequencyValue);
 
 
 
+
     focus.attr("transform", "translate(" + currentXValueOfPoint + "," + defaultYOffsetForDataPointLabel + ")");
     focus.select("text").text(data[currentFrequencyValue]+" ("+currentFrequencyValue+")");
     focus.select("circle").attr("r",5);
  
 
+ focus.select("line").attr({
+"x1": "0",
+"y1": "0",
+"x2": "0",
+"y2":  130
+
+
+    })
+
+
   }
+
 
 
 }
@@ -368,6 +405,12 @@ function createFocusElement(svg,yOffsetForGraphText){
       .attr("cy",yOffsetForGraphText-5)
       .attr("r",5);
 
+
+  focusElement.append("text")
+      .attr("x", 15)
+      .attr("y",yOffsetForGraphText);
+
+
 focusElement.append("line")
 .attr("stroke","orange")
 .attr("fill","black")
@@ -378,10 +421,6 @@ focusElement.append("line")
   "x2":0,
   "y2":120,
 });
-
-  focusElement.append("text")
-      .attr("x", 15)
-      .attr("y",yOffsetForGraphText);
 
 
 
