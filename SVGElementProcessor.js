@@ -1,5 +1,8 @@
-function createSVGElement(){
+function createSVGElement(graphTitle){
   return  d3.select("body")
+			.append("p")
+			.attr("class","separator")
+			.text(graphTitle)
             .append("svg")
             .attr("width", maximumSVGWidth)
             .attr("height", maximumSVGheight)

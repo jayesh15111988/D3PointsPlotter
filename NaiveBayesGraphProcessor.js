@@ -15,7 +15,7 @@
 
 
       //Create SVG element
-      var svg = createSVGElement();
+      var svg = createSVGElement("Naive Bayes Graphical representation");
 
 
 //For given scale, add axes to graph

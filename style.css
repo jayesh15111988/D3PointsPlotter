@@ -9,3 +9,12 @@
 .overlay {
   pointer-events: all;
 }
+
+
+svg {
+  background: rgba(190,160,210,0.5);
+}
+
+.separator{
+margin:40px;
+}

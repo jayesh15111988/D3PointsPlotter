@@ -7,7 +7,7 @@ maximumSVGWidth = 2500;
 var xScale=getXScale(KMeansClusteringOutput);
 var yScale=getYScale(KMeansClusteringOutput);
 
-var svg = createSVGElement();
+var svg = createSVGElement("K-Means Graphical representation");
 
 numberOfTicksInXdirection = 10;
 numberOfTicksInYdirection = 5;
