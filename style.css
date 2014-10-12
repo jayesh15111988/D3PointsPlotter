@@ -1,0 +1,11 @@
+.axes path,
+.axes line {
+    
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.overlay {
+  pointer-events: all;
+}
