@@ -1,5 +1,5 @@
 
-function createGraphFromKMeansClusteringResults(KMeansClusteringOutput){
+function createGraphFromKMeansClusteringResults(KMeansClusteringOutput,graphMetaData){
 
 //Adjusting graph width for KMeans clustering graph
 
@@ -7,12 +7,12 @@ maximumSVGWidth = 2500;
 var xScale=getXScale(KMeansClusteringOutput);
 var yScale=getYScale(KMeansClusteringOutput);
 
-var svg = createSVGElement("K-Means Graphical representation");
+var svg = createSVGElement(graphMetaData[0]);
 
 numberOfTicksInXdirection = 10;
 numberOfTicksInYdirection = 5;
 
-appendAxisToSVGElementWithScale(svg,xScale,yScale,"Distance From SPAM centroid","Distance From Regular message centroid");
+appendAxisToSVGElementWithScale(svg,xScale,yScale,graphMetaData[1],graphMetaData[2]);
 
 
 pointIndicatorLineForKMeans = svg.append("line")
@@ -76,7 +76,7 @@ else{
 
 
 
-var focus = createFocusElement(svg,-10);
+var focus = createFocusElement(svg,-5);
       
 
 //Which event gets triggered when user hovers mouse pointer over bullets
@@ -102,13 +102,15 @@ if(currentXValueOfPoint > (maximumSVGWidth/2)){
   originatingXPoint = currentXValueOfPoint - labelOffsetForBoundary;
 }
 
-    focus.attr("transform", "translate(" + (originatingXPoint) + "," + ( originatingYPoint ) + ")");
+    focus.attr("transform", "translate(" + (originatingXPoint) + "," + ( originatingYPoint + 10 ) + ")");
     focus.select("text").text(inputMessageValue);
     
     //We don't want to show extra line on screen which is colored in the orange
     focus.select("line").style("display","none");
 
 pointIndicatorLineForKMeans.attr("stroke",function(){
+
+//We want to show Spam messages in Red and Regular messages in Green color
 
 if(currentTupleWithMessageType[2] == true ){
   return "red";
@@ -121,7 +123,7 @@ else{
 });
     pointIndicatorLineForKMeans.attr({
   "x1":originatingXPoint,
-  "y1": originatingYPoint,
+  "y1": originatingYPoint+10,
   "x2":currentXValueOfPoint,
   "y2":currentYValueOfPoint,
 }); 
