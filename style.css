@@ -1,21 +1,19 @@
-.axes path,
-.axes line {
-    
+.axes path, .axes line {
     fill: none;
     stroke: black;
     shape-rendering: crispEdges;
 }
-
 .overlay {
-  pointer-events: all;
+    pointer-events: all;
 }
-
-
 svg {
-  background: rgba(190,160,210,0.5);
+    background: rgba(190, 160, 210, 0.5);
 }
-
-.separator{
-margin:40px;
-text-align:center;
+.separator {
+    margin: 40px;
+    text-align: center;
+}
+.legend {
+    font: 14px sans-serif;
+    box-shadow: 2px 2px 1px #888;
 }
