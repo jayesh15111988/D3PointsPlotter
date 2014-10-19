@@ -7,10 +7,10 @@ function createGraphFromKMeansClusteringResults(KMeansClusteringOutput, graphMet
     numberOfTicksInXdirection = 10;
     numberOfTicksInYdirection = 5;
     appendAxisToSVGElementWithScale(svg, xScale, yScale, graphMetaData[1], graphMetaData[2]);
-    pointIndicatorLineForKMeans = svg.append("line")
+    var pointIndicatorLineForKMeans = svg.append("line")
         .attr("stroke", "green")
         .attr("stroke-width", 1);
-    svg.selectAll("circle")
+         svg.selectAll("circle")
         .data(KMeansClusteringOutput)
         .enter()
         .append("circle")
@@ -42,7 +42,7 @@ function createGraphFromKMeansClusteringResults(KMeansClusteringOutput, graphMet
         .attr("fill", function (d, i) {
             var currentTupleWithMessageType = d;
             for (inputMessage in currentTupleWithMessageType) {
-                //If true, it is spam!
+                //If true, it is Spam!
                 if (currentTupleWithMessageType[inputMessage][2] == true) {
                     return "red";
                 } else {

@@ -11,7 +11,7 @@ function createGraphFromKMeansClusteringResults(KMeansClusteringOutput) {
         .attr("stroke", "green")
         .attr("fill", "black")
         .attr("stroke-width", 1);
-    svg.selectAll("circle")
+         svg.selectAll("circle")
         .data(KMeansClusteringOutput)
         .enter()
         .append("circle")

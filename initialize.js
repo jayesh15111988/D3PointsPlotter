@@ -14,6 +14,5 @@
       var color = d3.scale.category20();
       
        //Line drawn from Bullet point to the corresponding label
-      var pointIndicatorLineForKMeans;
       var legendLabels = ["Spam", "Regular Message"];
       var legendColors = ["red", "green"];
