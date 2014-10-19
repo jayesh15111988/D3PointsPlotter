@@ -1,4 +1,4 @@
- function createGraphFromMessagesKeywords(inputDataset) {
+ function createGraphFromMessagesKeywords(inputDataset,graphLabel) {
      //Create scale functions
      var xScale = getScaleForNaiveBayesvisualizationWithData(inputDataset);
      //We are going in the reverse direction as SVG scale grows in downward direction
@@ -7,7 +7,7 @@
          .range([graphPadding, maximumSVGheight - graphPadding]);
      //We want different color for different data points
      //Create SVG element
-     var svg = createSVGElement("Naive Bayes Graphical representation");
+     var svg = createSVGElement(graphLabel);
      //For given scale, add axes to graph
      appendAxisToSVGElementWithScale(svg, xScale, yScale, "Words Frequency in SMS", "Constant");
      //We are plotting frequency of each word in the form of points in the shape of a circle
