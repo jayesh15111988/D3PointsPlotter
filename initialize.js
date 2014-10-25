@@ -9,6 +9,9 @@
       var xAxisOrientation = "bottom",
           yAxisOrientation = "left";
       var bulletsDefaultYValue = 200;
+      //Extra variable added for tool tip positioning - This determines how far tooltip lies from 
+      //the point on which cursor is hovered
+      var xOffsetForTooltipLabel = 100;
       var defaultColorOpacity = "0.4";
       var defaultYOffsetForDataPointLabel = 60;
       var color = d3.scale.category20();

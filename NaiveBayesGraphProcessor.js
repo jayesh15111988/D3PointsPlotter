@@ -1,4 +1,4 @@
- function createGraphFromMessagesKeywords(inputDataset,graphLabel) {
+ function createGraphFromMessagesKeywords(inputDataset,graphLabel,yValueForTooltip) {
      //Create scale functions
      var xScale = getScaleForNaiveBayesvisualizationWithData(inputDataset);
      //We are going in the reverse direction as SVG scale grows in downward direction
@@ -26,42 +26,36 @@
                  return Math.sqrt(d[key].length) * 3;
              }
          }) // We are adding these elements to fire events when user hovers over these data points
-     .attr("class", "overlay")
-         .on("mouseover", function () {
-             focus.style("display", null)
+         .attr("class", "overlay")
+         .on("mouseover", function (data,index) {
+              var xPosition = parseFloat(d3.select(this).attr("cx"));
+              var yPosition = parseFloat(d3.select(this).attr("cy")) / 2;
+              mouseMovedOverDataPointsNaiveBayes(data, xPosition, yPosition);
          })
          .on("mouseout", function () {
-             focus.style("display", "none")
-         })
-         .on("mousemove", function (data, index) {
-             mouseMovedOverDataPointsNaiveBayes(data, index);
+             d3.select("#tooltip").classed("hidden", true);
          })
          .attr("fill", function (d, i) {
              return color(i);
          })
          .attr("fill-opacity", defaultColorOpacity);
-     //Focus - Defines the position and size when particular element is hovered by the mouse pointer
-     var focus = createFocusElement(svg, 0);
 
-     function mouseMovedOverDataPointsNaiveBayes(data, currentIndex) {
+     function mouseMovedOverDataPointsNaiveBayes(data, xPosition, yPosition) {
+
          var currentFrequencyValue = 0.0;
          for (key in data) {
              currentFrequencyValue = key;
          }
-         var currentXValueOfPoint = xScale(currentFrequencyValue);
-         focus.attr("transform", "translate(" + currentXValueOfPoint + "," + defaultYOffsetForDataPointLabel + ")");
-         focus.select("text")
-             .text(data[currentFrequencyValue] + " (" + currentFrequencyValue + ")");
-         focus.select("circle")
-             .attr("r", 5);
-         focus.select("line")
-             .attr("stroke", color(currentIndex));
-         focus.select("line")
-             .attr({
-                 "x1": "0",
-                 "y1": "0",
-                 "x2": "0",
-                 "y2": 130
-             })
+
+            var tooltipMetaDataHolder = {
+                xCoordinatePosition : ((xPosition +xOffsetForTooltipLabel)+ "px"),
+                yCoordinatePosition : ((yValueForTooltip + yPosition)+ "px"),
+                tooltipBody : data[currentFrequencyValue].join(", "),
+                tooltipTitle : "Frequency of Occurrence : " + currentFrequencyValue,
+                tooltipTitleClass : "RegularMessage"
+            };
+            generateTooltipWithMetadata(tooltipMetaDataHolder);
+
+
      }
  }

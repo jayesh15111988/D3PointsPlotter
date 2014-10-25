@@ -1,4 +1,4 @@
-function createGraphFromKMeansClusteringResults(KMeansClusteringOutput, graphMetaData) {
+function createGraphFromKMeansClusteringResults(KMeansClusteringOutput, graphMetaData, yValue) {
     //Adjusting graph width for KMeans clustering graph
     maximumSVGWidth = 2500;
     var xScale = getXScale(KMeansClusteringOutput);
@@ -27,67 +27,61 @@ function createGraphFromKMeansClusteringResults(KMeansClusteringOutput, graphMet
             }
         })
         .attr("r", 5) // We are adding these elements to fire events when user hovers over these data points
-    .attr("class", "overlay")
-        .on("mouseover", function () {
-            focus.style("display", null);
-            pointIndicatorLineForKMeans.style("display", null)
+        .attr("class", "overlay")
+        .on("mouseover", function (data) {
+
+            //X and y positions on graph where mouse is hovered
+            var xPosition = parseFloat(d3.select(this).attr("cx"));
+            var yPosition = parseFloat(d3.select(this).attr("cy")) / 2;
+            mouseMovedOverDataPointsKMeans(data, xPosition,yPosition);
         })
         .on("mouseout", function () {
-            focus.style("display", "none");
-            pointIndicatorLineForKMeans.style("display", "none")
-        })
-        .on("mousemove", function (data) {
-            mouseMovedOverDataPointsKMeans(data)
+            //hide tooltip as soon as mouse is hovered away from data point
+            d3.select("#tooltip").classed("hidden", true);
         })
         .attr("fill", function (d, i) {
             var currentTupleWithMessageType = d;
             for (inputMessage in currentTupleWithMessageType) {
                 //If true, it is Spam!
                 if (currentTupleWithMessageType[inputMessage][2] == true) {
-                    return "red";
+                    return legendColors[0];
                 } else {
-                    return "green";
+                    return legendColors[1];
                 }
             }
         })
         .attr("fill-opacity", defaultColorOpacity);
-    var focus = createFocusElement(svg, -5);
+
     //Which event gets triggered when user hovers mouse pointer over bullets
-    function mouseMovedOverDataPointsKMeans(data) {
+    function mouseMovedOverDataPointsKMeans(data,xPosition,yPosition) {
+
         var currentTupleWithDataPoints = [];
         var inputMessageValue = '';
         for (inputMessage in data) {
+            //Actual Holder holding distance from spam centroid, regular centroid and indicator if
+            //current message is spam or not
             currentTupleWithMessageType = data[inputMessage];
+            //Actual message
             inputMessageValue = inputMessage;
         }
-        var currentXValueOfPoint = xScale(currentTupleWithMessageType[0]);
-        var currentYValueOfPoint = yScale(currentTupleWithMessageType[1]);
-        var originatingXPoint = currentXValueOfPoint;
-        var originatingYPoint = 40;
-        var labelOffsetForBoundary = 200;
-        if (currentXValueOfPoint > (maximumSVGWidth / 2)) {
-            originatingXPoint = currentXValueOfPoint - labelOffsetForBoundary;
-        }
-        focus.attr("transform", "translate(" + (originatingXPoint) + "," + (originatingYPoint + 10) + ")");
-        focus.select("text")
-            .text(inputMessageValue);
-        //We don't want to show extra line on screen which is colored in the orange
-        focus.select("line")
-            .style("display", "none");
-        pointIndicatorLineForKMeans.attr("stroke", function () {
-            //We want to show Spam messages in Red and Regular messages in Green color
+
+            var messageCategory = ''
             if (currentTupleWithMessageType[2] == true) {
-                return "red";
+                messageCategory = "Spam";
             } else {
-                return "green";
+                messageCategory = "RegularMessage";
             }
-        });
-        pointIndicatorLineForKMeans.attr({
-            "x1": originatingXPoint,
-            "y1": originatingYPoint + 10,
-            "x2": currentXValueOfPoint,
-            "y2": currentYValueOfPoint,
-        });
+
+
+            var tooltipMetaDataHolder = {
+                xCoordinatePosition : ((xPosition +xOffsetForTooltipLabel)+ "px"),
+                yCoordinatePosition : ((yValue + yPosition)+ "px"),
+                tooltipBody : inputMessageValue,
+                tooltipTitle : messageCategory,
+                tooltipTitleClass : messageCategory
+            };
+
+            generateTooltipWithMetadata(tooltipMetaDataHolder);
     }
     addLegendsToInputSVGElement(svg);
 }

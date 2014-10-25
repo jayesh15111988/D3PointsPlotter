@@ -1,5 +1,5 @@
 import csv
-
+#Sample Class to parse python array and dictionary formatted data into csv file for easy processing
 frequencyHolder={};
 with open('spamMessagesFrequency.csv', 'Ur') as f:
     finalList = list(tuple(rec) for rec in csv.reader(f, delimiter=','))
